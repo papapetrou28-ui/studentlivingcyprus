@@ -65,15 +65,15 @@
 <div id="advertise" class="page"><section><div class="wrap">
   <div class="section-head"><div><div class="eyebrow">Landlords & agents</div><h2>Post a property</h2><p class="sub">Listings are reviewed by our team, usually within a day, before they appear in search.</p></div></div>
   <div id="advertiseGate" class="empty" hidden>Log in or create a free account to post a listing. <button class="btn" style="margin-left:10px" data-login>Log in / Sign up</button></div>
-  <form class="panel form-grid" id="listingForm">
-    <div class="field"><label>Property title *</label><input name="title" required maxlength="90" placeholder="Sunny 2-bedroom apartment"></div>
+  <form class="panel form-grid" id="listingForm" novalidate>
+    <div class="field"><label>Property title *</label><input name="title" required maxlength="90" placeholder="e.g. Sunny 2-bedroom apartment"></div>
     <div class="field"><label>Property type *</label><select name="type" required><option>Apartment</option><option>Studio</option><option>Room</option></select></div>
     <div class="field"><label>Area *</label><input name="area" required value="Aglantzia, Nicosia" maxlength="80"></div>
-    <div class="field"><label>Monthly rent (€) *</label><input name="rent" type="number" min="1" max="20000" required placeholder="750"></div>
+    <div class="field"><label>Monthly rent (€) *</label><input name="rent" type="number" min="1" max="20000" required placeholder="e.g. 750"></div>
     <div class="field"><label>Bedrooms</label><input name="beds" type="number" min="0" max="20" value="1"></div>
     <div class="field"><label>Security deposit (€)</label><input name="deposit" type="number" min="0" max="50000" value="0"></div>
     <div class="field"><label>Estimated extra monthly bills (€)</label><input name="bills" type="number" min="0" max="10000" value="0"></div>
-    <div class="field"><label>Contact email *</label><input name="email" type="email" required placeholder="landlord@example.com"></div>
+    <div class="field"><label>Contact email *</label><input name="email" type="email" required placeholder="e.g. landlord@example.com"></div>
     <div class="field wide"><label>Description</label><textarea name="description" maxlength="1500" placeholder="Furnished, close to campus, available from…"></textarea></div>
     <div class="field wide"><label>Photos (up to 6)</label><input name="photos" id="photoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple><div class="thumbs" id="photoPreview"></div></div>
     <div class="wide"><p class="err" id="listingErr"></p><button class="btn" type="submit">Submit for review</button></div>

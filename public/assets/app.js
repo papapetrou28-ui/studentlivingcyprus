@@ -22,7 +22,8 @@ function toast(text) {
 }
 
 async function api(path, { method = "GET", body, raw, type } = {}) {
-  if (state.user) await refreshSession().catch(() => null);
+  // Never let a slow token refresh stall the request.
+  if (state.user) await Promise.race([refreshSession().catch(() => null), new Promise((r) => setTimeout(r, 5000))]);
   const headers = {};
   if (body !== undefined) headers["content-type"] = "application/json";
   if (raw) headers["content-type"] = type;
@@ -332,7 +333,8 @@ async function report(target) {
 function renderAdvertise() {
   $("#advertiseGate").hidden = !!state.user;
   $("#listingForm").hidden = !state.user;
-  if (state.user && !$("#listingForm").email.value) $("#listingForm").email.value = state.user.email || "";
+  const email = $("#listingForm").elements.email;
+  if (state.user && !email.value) email.value = state.user.email || "";
 }
 
 // Shrinks photos in the browser so each upload stays small and fast.
@@ -361,6 +363,15 @@ $("#listingForm").addEventListener("submit", async (e) => {
   const btn = $("button[type=submit]", form);
   const err = $("#listingErr");
   err.textContent = "";
+  // The form uses novalidate so problems are always shown here, not in a browser bubble some phones hide.
+  const invalid = [...form.elements].find((el) => el.willValidate && !el.checkValidity());
+  if (invalid) {
+    const label = $("label", invalid.closest(".field"))?.textContent.replace(" *", "") || "This field";
+    err.textContent = invalid.validity.valueMissing ? `${label} is required.` : `${label}: ${invalid.validationMessage}`;
+    invalid.focus();
+    invalid.scrollIntoView({ block: "center", behavior: "smooth" });
+    return;
+  }
   const data = Object.fromEntries(new FormData(form));
   delete data.photos;
   const files = [...$("#photoInput").files].slice(0, 6);

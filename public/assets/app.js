@@ -700,4 +700,7 @@ async function start() {
   calculate();
   routeFromHash();
 }
+// Public browsing must not wait for the account service.
+calculate();
+routeFromHash();
 start();

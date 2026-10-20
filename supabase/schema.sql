@@ -37,7 +37,7 @@ alter table public.properties enable row level security;
 alter table public.roommate_requests enable row level security;
 create policy "Users read own profile" on public.profiles for select to authenticated using (id = (select auth.uid()));
 create policy "Users create own profile" on public.profiles for insert to authenticated with check (id = (select auth.uid()) and role in ('student','landlord'));
-create policy "Users update own profile" on public.profiles for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
+-- Profile roles are immutable from the browser. Admin-only changes must use trusted server tooling.
 create policy "Public sees published properties" on public.properties for select to anon, authenticated using (status = 'published' or owner_id = (select auth.uid()));
 create policy "Landlords create pending properties" on public.properties for insert to authenticated with check (
  owner_id = (select auth.uid()) and status = 'pending'

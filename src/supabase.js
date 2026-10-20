@@ -7,7 +7,7 @@ export const supabase = cfg.url && cfg.publishableKey
 export async function signUp({email,password,displayName,role}) {
  if (!supabase) throw new Error('Supabase is not configured.');
  if (!['student','landlord'].includes(role)) throw new Error('Invalid account type');
- const {data,error}=await supabase.auth.signUp({email,password,options:{data:{display_name:displayName,role}}});
+ const {data,error}=await supabase.auth.signUp({email,password,options:{emailRedirectTo:window.location.origin+window.location.pathname,data:{display_name:displayName,role}}});
  if(error) throw error;
  // Email confirmation may be required. Profile creation happens on first authenticated session.
  if(data.session) await ensureProfile(displayName,role);

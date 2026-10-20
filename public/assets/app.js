@@ -277,6 +277,7 @@ function demoDealCards() {
 
 async function loadHome() {
   const box = $("#homeListings");
+  box.innerHTML = demoHomeCards();
   try {
     const list = await api("/listings?limit=3");
     box.innerHTML = list.map((p) => card(p)).join("") + demoHomeCards();
@@ -292,6 +293,7 @@ async function loadListings() {
   if ($("#priceFilter").value) params.set("max", $("#priceFilter").value);
   const box = $("#allListings");
   const demos = demoHomeCards({ q, type: $("#typeFilter").value, max: $("#priceFilter").value });
+  box.innerHTML = demos || emptyBox("Loading listings…");
   try {
     const list = await api("/listings?" + params);
     box.innerHTML = (list.map((p) => card(p)).join("") + demos) || emptyBox("No listings match your search yet.");
@@ -557,6 +559,7 @@ async function loadDashboard() {
 // ---------- Student deals ----------
 async function loadAds() {
   const box = $("#adsList");
+  box.innerHTML = demoDealCards();
   try {
     const ads = await api("/ads");
     box.innerHTML = ads.map((a) => `<article class="card deal"><div class="card-content deal" style="height:100%">

@@ -240,12 +240,47 @@ function card(p, { owner = false } = {}) {
 
 const emptyBox = (text) => `<div class="empty wide" style="grid-column:1/-1">${text}</div>`;
 
+// Fictional examples are display-only and never enter the listings database.
+const DEMO_HOMES = [
+  { title: "Demo studio in Aglantzia", type: "Studio", area: "Aglantzia, Nicosia", rent: 500, deposit: 500, bills: 80, description: "Illustrative furnished studio with a private kitchen and bathroom. Bills excluded; €80/month is an example estimate." },
+  { title: "Demo room in a shared flat", type: "Room", area: "Aglantzia, Nicosia", rent: 330, deposit: 330, bills: 60, description: "Illustrative furnished private room with a shared kitchen and bathroom. Extra bills estimated at €60/month." },
+];
+const DEMO_DEALS = [
+  { business: "Example Campus Café (fictional)", title: "10% student discount", description: "Example terms: 10% off food and drinks when showing a student ID. This fictional offer has no participating business and cannot be redeemed." },
+  { business: "Example Student Moves (fictional)", title: "€20 off a student move", description: "Example terms: €20 off one local student move in Aglantzia. This fictional offer has no participating business and cannot be redeemed." },
+];
+function demoHomeCards({ q = "", type = "", max = "" } = {}) {
+  return DEMO_HOMES.filter((p) =>
+    (!q || (p.title + " " + p.area + " " + p.description).toLowerCase().includes(q.toLowerCase())) &&
+    (!type || p.type === type) && (!max || p.rent <= Number(max))
+  ).map((p) => `<article class="card">
+    <div class="photo" aria-label="Illustrative property icon">${icon(p.type)}</div>
+    <div class="card-content">
+      <span class="badge">DEMO</span> <span class="pill">${esc(p.type)}</span>
+      <h3 style="margin-top:12px">${esc(p.title)}</h3>
+      <p class="meta">📍 ${esc(p.area)} · Furnished</p>
+      <div class="price">${euro(p.rent)}<span class="meta"> / month</span></div>
+      <p class="meta">Deposit: ${euro(p.deposit)} · Est. extra bills: ${euro(p.bills)}/mo</p>
+      <p class="sub">${esc(p.description)}</p>
+      <p class="notice"><strong>Fictional property — unavailable for rent.</strong> Prices and costs are examples.</p>
+      <div class="card-foot"><button class="btn secondary" disabled>Demo only</button></div>
+    </div></article>`).join("");
+}
+function demoDealCards() {
+  return DEMO_DEALS.map((a) => `<article class="card deal"><div class="card-content">
+    <span class="badge">EXAMPLE — NOT REDEEMABLE</span>
+    <p class="meta">${esc(a.business)} · Aglantzia</p>
+    <h3>${esc(a.title)}</h3><p class="sub">${esc(a.description)}</p>
+    <div class="card-foot"><button class="btn secondary" disabled>Example only</button></div>
+  </div></article>`).join("");
+}
+
 async function loadHome() {
   const box = $("#homeListings");
   try {
     const list = await api("/listings?limit=3");
-    box.innerHTML = list.map((p) => card(p)).join("") || emptyBox('No listings yet. <button class="link" data-page="advertise">Be the first to post one →</button>');
-  } catch (err) { box.innerHTML = emptyBox(esc(err.message)); }
+    box.innerHTML = list.map((p) => card(p)).join("") + demoHomeCards();
+  } catch (err) { box.innerHTML = emptyBox(esc(err.message)) + demoHomeCards(); }
 }
 
 let listingsTimer;
@@ -256,10 +291,11 @@ async function loadListings() {
   if ($("#typeFilter").value) params.set("type", $("#typeFilter").value);
   if ($("#priceFilter").value) params.set("max", $("#priceFilter").value);
   const box = $("#allListings");
+  const demos = demoHomeCards({ q, type: $("#typeFilter").value, max: $("#priceFilter").value });
   try {
     const list = await api("/listings?" + params);
-    box.innerHTML = list.map((p) => card(p)).join("") || emptyBox("No listings match your search yet.");
-  } catch (err) { box.innerHTML = emptyBox(esc(err.message)); }
+    box.innerHTML = (list.map((p) => card(p)).join("") + demos) || emptyBox("No listings match your search yet.");
+  } catch (err) { box.innerHTML = emptyBox(esc(err.message)) + demos; }
 }
 $("#q").addEventListener("input", () => { clearTimeout(listingsTimer); listingsTimer = setTimeout(loadListings, 250); });
 $("#typeFilter").addEventListener("change", loadListings);
@@ -527,8 +563,8 @@ async function loadAds() {
         <span class="pill">${esc(a.business)}</span> ${a.tier === "featured" ? '<span class="badge featured">★ Featured</span>' : ""}
         <h3 style="margin-top:12px">${esc(a.title)}</h3><p class="sub">${esc(a.description)}</p>
         ${a.url ? `<div class="card-foot"><a class="btn secondary" href="/api/ads/${a.id}/go" target="_blank" rel="noopener sponsored">Get the deal →</a></div>` : ""}
-      </div></article>`).join("") || emptyBox("No deals right now. Local businesses: advertise below!");
-  } catch (err) { box.innerHTML = emptyBox(esc(err.message)); }
+      </div></article>`).join("") + demoDealCards();
+  } catch (err) { box.innerHTML = emptyBox(esc(err.message)) + demoDealCards(); }
 }
 
 $("#advertiseBizForm").addEventListener("submit", async (e) => {

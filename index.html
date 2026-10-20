@@ -47,4 +47,4 @@ document.getElementById('signInForm').addEventListener('submit',async e=>{
 logout.addEventListener('click',async()=>{try{await signOut();await refreshAccount();}catch(err){status.textContent='Sign-out failed: '+err.message;}});
 supabase?.auth.onAuthStateChange(()=>{setTimeout(refreshAccount,0)});
 refreshAccount();
-</script></body></html>
+</script><script type="module" src="./src/properties.js"></script></body></html>

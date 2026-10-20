@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student Living Cyprus — Find your place</title>
+<meta name="description" content="Student homes, roommates and living-cost tools for students in Cyprus.">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<header class="top"><div class="wrap nav">
+  <a href="#home" class="brand">student<span>living</span>.cy</a>
+  <nav class="links" id="nav">
+    <button data-page="home">Home</button>
+    <button data-page="properties">Find a home</button>
+    <button data-page="roommates">Roommates</button>
+    <button data-page="expenses">Expenses</button>
+    <button data-page="businesses">Student deals</button>
+    <button data-page="messages" data-auth hidden>Messages<span id="unread" class="count" hidden></span></button>
+    <button data-page="dashboard" data-auth hidden>My dashboard</button>
+    <button data-page="admin" data-admin hidden>Admin</button>
+  </nav>
+  <div class="nav-right">
+    <button class="ghost" id="loginBtn">Log in</button>
+    <button class="ghost" id="logoutBtn" hidden>Log out</button>
+    <button class="btn" data-page="advertise">+ Post a listing</button>
+  </div>
+</div></header>
+
+<main>
+<div id="home" class="page active">
+  <div class="hero"><div class="wrap hero-grid"><div>
+    <div class="eyebrow">Made for students in Cyprus</div>
+    <h1>Your next home starts here.</h1>
+    <p>Find student-friendly homes in Aglantzia, connect with roommates and understand your total monthly living costs before moving in.</p>
+    <form class="search" id="heroSearchForm"><input id="heroSearch" placeholder="Search Aglantzia, studio, room…" aria-label="Search properties"><button class="btn">Find a home →</button></form>
+    <div class="stats"><span>✓ Transparent expenses</span><span>✓ Message landlords directly</span><span>✓ Free for students</span></div>
+  </div>
+  <div class="hero-art"><div class="art-card"><span class="pill">Student homes</span><strong>Rooms, studios and apartments</strong><small>📍 Aglantzia, Nicosia and beyond</small><div class="art-price" style="font-size:18px">Every listing reviewed</div></div></div>
+  </div></div>
+  <section><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">Discover</div><h2>Latest student homes</h2><p class="sub">Every listing is checked by our team before it goes live.</p></div><button class="btn secondary" data-page="properties">View all listings →</button></div>
+    <div id="homeListings" class="grid"></div>
+  </div></section>
+  <section style="background:#eff7f4"><div class="wrap">
+    <div class="section-head"><div><div class="eyebrow">Everything in one place</div><h2>More than just a rental site</h2></div></div>
+    <div class="features">
+      <div class="feature"><div class="ico">🏠</div><h3>Find your place</h3><p class="sub">Compare rooms, studios and apartments with rent, deposit and bills up front.</p></div>
+      <div class="feature"><div class="ico">🤝</div><h3>Share with roommates</h3><p class="sub">Post a roommate request and message other students directly.</p></div>
+      <div class="feature"><div class="ico">🧮</div><h3>Budget with confidence</h3><p class="sub">Split rent, electricity, water, internet and other expenses.</p></div>
+    </div>
+  </div></section>
+</div>
+
+<div id="properties" class="page"><section><div class="wrap">
+  <div class="section-head"><div><div class="eyebrow">Explore</div><h2>Find student accommodation</h2><p class="sub">Browse approved listings from landlords and students.</p></div><button class="btn" data-page="advertise">Advertise property</button></div>
+  <div class="filters">
+    <input id="q" placeholder="Search title, area or description">
+    <select id="typeFilter"><option value="">All property types</option><option>Studio</option><option>Apartment</option><option>Room</option></select>
+    <select id="priceFilter"><option value="">Any price</option><option value="400">Up to €400</option><option value="600">Up to €600</option><option value="800">Up to €800</option><option value="1200">Up to €1,200</option></select>
+  </div>
+  <div id="allListings" class="grid"></div>
+</div></section></div>
+
+<div id="advertise" class="page"><section><div class="wrap">
+  <div class="section-head"><div><div class="eyebrow">Landlords & agents</div><h2>Post a property</h2><p class="sub">Listings are reviewed by our team, usually within a day, before they appear in search.</p></div></div>
+  <div id="advertiseGate" class="empty" hidden>Log in or create a free account to post a listing. <button class="btn" style="margin-left:10px" data-login>Log in / Sign up</button></div>
+  <form class="panel form-grid" id="listingForm">
+    <div class="field"><label>Property title *</label><input name="title" required maxlength="90" placeholder="Sunny 2-bedroom apartment"></div>
+    <div class="field"><label>Property type *</label><select name="type" required><option>Apartment</option><option>Studio</option><option>Room</option></select></div>
+    <div class="field"><label>Area *</label><input name="area" required value="Aglantzia, Nicosia" maxlength="80"></div>
+    <div class="field"><label>Monthly rent (€) *</label><input name="rent" type="number" min="1" max="20000" required placeholder="750"></div>
+    <div class="field"><label>Bedrooms</label><input name="beds" type="number" min="0" max="20" value="1"></div>
+    <div class="field"><label>Security deposit (€)</label><input name="deposit" type="number" min="0" max="50000" value="0"></div>
+    <div class="field"><label>Estimated extra monthly bills (€)</label><input name="bills" type="number" min="0" max="10000" value="0"></div>
+    <div class="field"><label>Contact email *</label><input name="email" type="email" required placeholder="landlord@example.com"></div>
+    <div class="field wide"><label>Description</label><textarea name="description" maxlength="1500" placeholder="Furnished, close to campus, available from…"></textarea></div>
+    <div class="field wide"><label>Photos (up to 6)</label><input name="photos" id="photoInput" type="file" accept="image/jpeg,image/png,image/webp" multiple><div class="thumbs" id="photoPreview"></div></div>
+    <div class="wide"><p class="err" id="listingErr"></p><button class="btn" type="submit">Submit for review</button></div>
+  </form>
+</div></section></div>
+
+<div id="roommates" class="page"><section><div class="wrap">
+  <div class="section-head"><div><div class="eyebrow">Live together, spend less</div><h2>Find a roommate</h2><p class="sub">Post what you're looking for and message other students.</p></div></div>
+  <div class="split">
+    <form id="roommateForm" class="panel form-grid">
+      <h3 class="wide">Create a roommate request</h3>
+      <div class="field"><label>Display name *</label><input name="name" required maxlength="50" placeholder="Alex"></div>
+      <div class="field"><label>Monthly budget (€) *</label><input name="budget" type="number" min="1" max="10000" required placeholder="400"></div>
+      <div class="field wide"><label>Preferred area</label><input name="area" value="Aglantzia" maxlength="80"></div>
+      <div class="field wide"><label>About your search</label><textarea name="about" maxlength="600" placeholder="Looking for a quiet flatshare near university…"></textarea></div>
+      <div class="wide"><p class="err" id="roommateErr"></p><button class="btn" type="submit">Post roommate request</button></div>
+    </form>
+    <div><h3>Roommate board</h3><p class="note">Don't share your address, ID or bank details in a public post. Use messages to get in touch.</p><div id="roommateList"></div></div>
+  </div>
+</div></section></div>
+
+<div id="expenses" class="page"><section><div class="wrap">
+  <div class="section-head"><div><div class="eyebrow">Know the full cost</div><h2>Living expenses calculator</h2><p class="sub">Estimate the total monthly cost and divide shared bills fairly.</p></div></div>
+  <div class="split">
+    <div class="panel form-grid" id="calc">
+      <div class="field"><label>Rent (€)</label><input id="rent" type="number" min="0" value="750"></div>
+      <div class="field"><label>Number of roommates</label><select id="people"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></div>
+      <div class="field"><label>Electricity (€)</label><input id="electric" type="number" min="0" value="120"></div>
+      <div class="field"><label>Water (€)</label><input id="water" type="number" min="0" value="30"></div>
+      <div class="field"><label>Internet (€)</label><input id="internet" type="number" min="0" value="35"></div>
+      <div class="field"><label>Common expenses (€)</label><input id="common" type="number" min="0" value="45"></div>
+      <div class="field wide"><label>Groceries and other shared costs (€)</label><input id="other" type="number" min="0" value="180"></div>
+    </div>
+    <div><div class="result">
+      <div class="eyebrow">Monthly estimate</div><p>Total household cost</p><b id="total">€0</b>
+      <hr style="border:0;border-top:1px solid #bddcd0;margin:22px 0">
+      <p>Cost per student</p><b id="each">€0</b>
+      <p class="note">Assumes all costs are split equally. Actual utility charges and individual spending may vary.</p>
+      <button class="btn" id="copyBudget">Copy cost breakdown</button>
+    </div></div>
+  </div>
+</div></section></div>
+
+<div id="businesses" class="page"><section><div class="wrap">
+  <div class="eyebrow">Student-friendly services</div><h2>Local student deals</h2>
+  <p class="sub">Offers from local movers, furniture shops, cleaning services, internet providers and more.</p>
+  <div id="adsList" class="grid" style="margin-top:25px"></div>
+  <form class="panel form-grid" id="advertiseBizForm" style="margin-top:28px">
+    <div class="wide"><h3>Advertise your business</h3><p class="sub">Reach students looking for a new home. Tell us about your offer and we'll get back to you.</p></div>
+    <div class="field"><label>Business name *</label><input name="reason" required maxlength="120"></div>
+    <div class="field"><label>Email *</label><input name="email" type="email" required></div>
+    <div class="field wide"><label>Your offer</label><textarea name="message" maxlength="2000" placeholder="10% student discount on furniture delivery…"></textarea></div>
+    <div class="wide"><p class="err" id="bizErr"></p><button class="btn" type="submit">Send enquiry</button></div>
+  </form>
+</div></section></div>
+
+<div id="messages" class="page"><section><div class="wrap">
+  <div class="eyebrow">Inbox</div><h2>Messages</h2><p class="sub">Conversations about your listings, roommate posts and homes you've enquired about.</p>
+  <div class="inbox" style="margin-top:22px"><div class="threads" id="threads"></div><div class="convo" id="convo"><div class="empty">Choose a conversation.</div></div></div>
+</div></section></div>
+
+<div id="dashboard" class="page"><section><div class="wrap">
+  <div class="eyebrow">Your account</div><h2>My dashboard</h2><p class="sub" id="dashHello"></p>
+  <h3 style="margin-top:30px">My property listings</h3><div id="myListings" class="grid"></div>
+  <h3 style="margin-top:35px">My roommate requests</h3><div id="myRoommates"></div>
+</div></section></div>
+
+<div id="admin" class="page"><section><div class="wrap">
+  <div class="eyebrow">Moderation</div><h2>Admin</h2>
+  <h3 style="margin-top:26px">Listings waiting for review</h3><div id="adminPending"></div>
+  <h3 style="margin-top:30px">Reports and business enquiries</h3><div id="adminReports"></div>
+  <h3 style="margin-top:30px">Student deals</h3>
+  <form class="panel form-grid" id="adForm">
+    <div class="field"><label>Business *</label><input name="business" required maxlength="100"></div>
+    <div class="field"><label>Offer title *</label><input name="title" required maxlength="120"></div>
+    <div class="field wide"><label>Description</label><textarea name="description" maxlength="600"></textarea></div>
+    <div class="field"><label>Website</label><input name="url" type="url" placeholder="https://"></div>
+    <div class="field"><label>Show for (days)</label><input name="days" type="number" min="1" max="365" value="30"></div>
+    <div class="field"><label>Placement</label><select name="tier"><option value="deal">Standard</option><option value="featured">Featured (shown first)</option></select></div>
+    <div class="wide"><button class="btn">Add deal</button></div>
+  </form>
+  <div id="adminAds"></div>
+  <h3 style="margin-top:30px">Recently reviewed listings</h3><div id="adminRecent"></div>
+</div></section></div>
+</main>
+
+<footer class="footer"><div class="wrap">
+  <div class="brand" style="color:white">student<span style="color:#a9d8c9">living</span>.cy</div>
+  <p>Start in Aglantzia. Grow across Cyprus.</p>
+  <p class="note" style="color:#b8cfca">Always view a property and sign a written contract before paying any deposit. Report suspicious listings using the “Report” link.</p>
+</div></footer>
+
+<div id="detailModal" class="modal"><div class="modal-box"><button class="close" data-close aria-label="Close">×</button><div id="detailBody"></div></div></div>
+
+<div id="authModal" class="modal"><div class="modal-box narrow"><button class="close" data-close aria-label="Close">×</button>
+  <h2 id="authTitle">Welcome</h2>
+  <div class="tabs" id="authTabs"><button data-tab="login" class="active">Log in</button><button data-tab="signup">Sign up</button></div>
+  <form id="authForm" class="stack">
+    <div class="field" data-for="signup"><label>Your name</label><input name="name" maxlength="60" autocomplete="name"></div>
+    <div class="field" data-for="login signup forgot"><label>Email</label><input name="email" type="email" required autocomplete="email"></div>
+    <div class="field" data-for="login signup reset invite"><label id="pwLabel">Password</label><input name="password" type="password" minlength="8" autocomplete="current-password"></div>
+    <p class="err" id="authErr"></p>
+    <button class="btn" id="authSubmit">Log in</button>
+    <button type="button" class="link" id="forgotLink" data-for="login">Forgot your password?</button>
+  </form>
+</div></div>
+
+<div id="toast" class="toast" role="status"></div>
+<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

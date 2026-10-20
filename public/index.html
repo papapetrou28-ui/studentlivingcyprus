@@ -28,7 +28,7 @@ body:has(.page:target) .page.active:not(:target){display:none}
   <div class="nav-right">
     <button class="ghost" id="loginBtn">Log in</button>
     <button class="ghost" id="logoutBtn" hidden>Log out</button>
-    <a class="btn" href="#advertise" data-page="advertise">+ Post a listing</a>
+    <a class="btn" href="#post-property" data-page="post-property">+ Post a listing</a>
   </div>
 </div></header>
 
@@ -58,7 +58,7 @@ body:has(.page:target) .page.active:not(:target){display:none}
 </div>
 
 <div id="properties" class="page"><section><div class="wrap">
-  <div class="section-head"><div><div class="eyebrow">Explore</div><h2>Find student accommodation</h2><p class="sub">Browse approved listings from landlords and students.</p></div><button class="btn" data-page="advertise">Advertise property</button></div>
+  <div class="section-head"><div><div class="eyebrow">Explore</div><h2>Find student accommodation</h2><p class="sub">Browse approved listings from landlords and students.</p></div><button class="btn" data-page="post-property">Advertise property</button></div>
   <div class="filters">
     <input id="q" placeholder="Search title, area or description">
     <select id="typeFilter"><option value="">All property types</option><option>Studio</option><option>Apartment</option><option>Room</option></select>
@@ -67,7 +67,7 @@ body:has(.page:target) .page.active:not(:target){display:none}
   <div id="allListings" class="grid"></div>
 </div></section></div>
 
-<div id="advertise" class="page"><section><div class="wrap">
+<div id="post-property" class="page"><section><div class="wrap">
   <div class="section-head"><div><div class="eyebrow">Landlords & agents</div><h2>Post a property</h2><p class="sub">Listings are reviewed by our team, usually within a day, before they appear in search.</p></div></div>
   <div id="advertiseGate" class="empty">Log in or create a free account to post a listing. <button class="btn" style="margin-left:10px" data-login>Log in / Sign up</button></div>
   <form class="panel form-grid" id="listingForm" novalidate hidden>
@@ -187,6 +187,6 @@ body:has(.page:target) .page.active:not(:target){display:none}
 </div></div>
 
 <div id="toast" class="toast" role="status"></div>
-<script type="module" src="/assets/app.js?v=20261020-post-fix"></script>
+<script type="module" src="/assets/app.js?v=20261020-post-property"></script>
 </body>
 </html>

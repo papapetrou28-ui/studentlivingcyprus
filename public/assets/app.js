@@ -48,10 +48,11 @@ function busy(button, on, label) {
 }
 
 // ---------- Navigation ----------
-const PAGES = ["home", "properties", "advertise", "roommates", "expenses", "businesses", "messages", "dashboard", "admin"];
+const PAGES = ["home", "properties", "post-property", "roommates", "expenses", "businesses", "messages", "dashboard", "admin"];
 const AUTH_PAGES = ["messages", "dashboard"];
 
 function go(id, { push = true } = {}) {
+  if (id === "advertise") id = "post-property"; // Support older posting links.
   if (!PAGES.includes(id)) id = "home";
   $$(".modal").forEach((m) => m.classList.remove("open"));
   if (AUTH_PAGES.includes(id) && !state.user) { openAuth("login", id); id = "home"; }
@@ -61,7 +62,7 @@ function go(id, { push = true } = {}) {
   if (push && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
   window.scrollTo(0, 0);
   ({
-    home: loadHome, properties: loadListings, advertise: renderAdvertise, roommates: loadRoommates,
+    home: loadHome, properties: loadListings, "post-property": renderAdvertise, roommates: loadRoommates,
     expenses: calculate, businesses: loadAds, messages: loadMessages, dashboard: loadDashboard, admin: loadAdmin,
   })[id]?.();
 }
@@ -396,7 +397,7 @@ $("#photoInput").addEventListener("change", (e) => {
 
 $("#listingForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (!state.user) return openAuth("login", "advertise");
+  if (!state.user) return openAuth("login", "post-property");
   const form = e.target;
   const btn = $("button[type=submit]", form);
   const err = $("#listingErr");
@@ -551,7 +552,7 @@ async function loadDashboard() {
   $("#dashHello").textContent = `Logged in as ${state.user.name ? state.user.name + " · " : ""}${state.user.email}`;
   try {
     const { listings, roommates } = await api("/my");
-    $("#myListings").innerHTML = listings.map((p) => card(p, { owner: true })).join("") || emptyBox('No listings yet. <button class="link" data-page="advertise">Post your first listing →</button>');
+    $("#myListings").innerHTML = listings.map((p) => card(p, { owner: true })).join("") || emptyBox('No listings yet. <button class="link" data-page="post-property">Post your first listing →</button>');
     $("#myRoommates").innerHTML = roommates.map(roommateCard).join("") || '<div class="empty">No roommate requests yet.</div>';
   } catch (err) { $("#myListings").innerHTML = emptyBox(esc(err.message)); }
 }
@@ -576,7 +577,7 @@ $("#advertiseBizForm").addEventListener("submit", async (e) => {
   $("#bizErr").textContent = "";
   busy(btn, true, "Sending…");
   try {
-    await api("/reports", { method: "POST", body: { kind: "advertise", ...Object.fromEntries(new FormData(e.target)) } });
+    await api("/reports", { method: "POST", body: { kind: "post-property", ...Object.fromEntries(new FormData(e.target)) } });
     e.target.reset();
     toast("Thanks! We'll be in touch about advertising.");
   } catch (err) { $("#bizErr").textContent = err.message; }
@@ -606,7 +607,7 @@ async function loadAdmin() {
     $("#adminPending").innerHTML = pending.map((p) => adminListing(p, true)).join("") || '<div class="empty">Nothing waiting for review. 🎉</div>';
     $("#adminRecent").innerHTML = recent.map((p) => adminListing(p, false)).join("") || '<div class="empty">No reviewed listings yet.</div>';
     $("#adminReports").innerHTML = reports.map((r) => `<div class="admin-row"><div>
-        <strong>${r.kind === "advertise" ? "📣 Advertising enquiry: " : "⚠️ Report: "}${esc(r.reason)}</strong>
+        <strong>${r.kind === "post-property" ? "📣 Advertising enquiry: " : "⚠️ Report: "}${esc(r.reason)}</strong>
         <p class="meta" style="margin:6px 0">${esc(r.email)} · ${day(r.created_at)}${r.listing_id ? ` · <button class="link" data-listing="${r.listing_id}">listing #${r.listing_id}</button>` : ""}${r.roommate_id ? ` · roommate post #${r.roommate_id} <button class="link danger" data-delete-roommate="${r.roommate_id}">delete post</button>` : ""}</p>
         ${r.message ? `<p style="margin:0;white-space:pre-wrap">${esc(r.message)}</p>` : ""}
       </div><div class="actions"><a class="small-btn" href="mailto:${esc(r.email)}">Email</a><button class="small-btn" data-resolve="${r.id}">Mark done</button></div></div>`).join("") || '<div class="empty">No open reports or enquiries.</div>';

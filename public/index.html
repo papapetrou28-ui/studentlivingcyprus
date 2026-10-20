@@ -6,6 +6,11 @@
 <title>Student Living Cyprus — Find your place</title>
 <meta name="description" content="Student homes, roommates and living-cost tools for students in Cyprus.">
 <link rel="stylesheet" href="/assets/styles.css">
+<style>
+/* Keep public deep links usable before JavaScript initializes. */
+body:has(.page:target) .page.active:not(:target){display:none}
+.page:target{display:block}
+</style>
 </head>
 <body>
 <header class="top"><div class="wrap nav">
@@ -64,8 +69,8 @@
 
 <div id="advertise" class="page"><section><div class="wrap">
   <div class="section-head"><div><div class="eyebrow">Landlords & agents</div><h2>Post a property</h2><p class="sub">Listings are reviewed by our team, usually within a day, before they appear in search.</p></div></div>
-  <div id="advertiseGate" class="empty" hidden>Log in or create a free account to post a listing. <button class="btn" style="margin-left:10px" data-login>Log in / Sign up</button></div>
-  <form class="panel form-grid" id="listingForm" novalidate>
+  <div id="advertiseGate" class="empty">Log in or create a free account to post a listing. <button class="btn" style="margin-left:10px" data-login>Log in / Sign up</button></div>
+  <form class="panel form-grid" id="listingForm" novalidate hidden>
     <div class="field"><label>Property title *</label><input name="title" required maxlength="90" placeholder="e.g. Sunny 2-bedroom apartment"></div>
     <div class="field"><label>Property type *</label><select name="type" required><option>Apartment</option><option>Studio</option><option>Room</option></select></div>
     <div class="field"><label>Area *</label><input name="area" required value="Aglantzia, Nicosia" maxlength="80"></div>

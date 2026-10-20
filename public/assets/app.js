@@ -13,12 +13,12 @@ const euro = (v) => "€" + Number(v).toLocaleString("en-IE", { maximumFractionD
 const when = (d) => new Date(d).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 const day = (d) => new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-function toast(text) {
+function toast(text, ms = 3800) {
   const el = $("#toast");
   el.textContent = text;
   el.style.display = "block";
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => (el.style.display = "none"), 3800);
+  toast.timer = setTimeout(() => (el.style.display = "none"), ms);
 }
 
 async function api(path, { method = "GET", body, raw, type } = {}) {
@@ -56,6 +56,7 @@ function go(id, { push = true } = {}) {
   $$(".modal").forEach((m) => m.classList.remove("open"));
   if (AUTH_PAGES.includes(id) && !state.user) { openAuth("login", id); id = "home"; }
   if (id === "admin" && !state.isAdmin) id = "home";
+  if (id === "advertise" && !state.user && push) setTimeout(() => openAuth("signup", "advertise"), 0);
   $$(".page").forEach((p) => p.classList.toggle("active", p.id === id));
   $$("#nav [data-page]").forEach((b) => b.classList.toggle("active", b.dataset.page === id));
   if (push && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
@@ -69,7 +70,12 @@ function go(id, { push = true } = {}) {
 document.addEventListener("click", (e) => {
   const nav = e.target.closest("[data-page]");
   if (nav) { e.preventDefault(); go(nav.dataset.page); return; }
-  if (e.target.closest("[data-login]")) { openAuth("login"); return; }
+  const auth = e.target.closest("[data-login], [data-signup]");
+  if (auth) {
+    const page = $(".page.active")?.id;
+    openAuth(auth.hasAttribute("data-signup") ? "signup" : "login", page === "advertise" ? page : null);
+    return;
+  }
   if (e.target.closest("[data-close]") || e.target.classList.contains("modal")) closeModals();
   const brand = e.target.closest(".brand");
   if (brand) { e.preventDefault(); go("home"); }
@@ -98,6 +104,8 @@ function openAuth(mode = "login", next = null) {
   afterLogin = next;
   setAuthMode(mode);
   $("#authErr").textContent = "";
+  $("#authForm").hidden = false;
+  $("#authCheckEmail").hidden = true;
   $("#authModal").classList.add("open");
   setTimeout(() => $("#authForm input:not([hidden])")?.focus(), 30);
 }
@@ -156,7 +164,7 @@ $("#authForm").addEventListener("submit", async (e) => {
     } else if (authMode === "signup") {
       const user = await signup(email, password, { full_name: String(f.get("name") || "").trim() });
       if (user.emailVerified) await loggedIn("Your account is ready.");
-      else { closeModals(); toast("Almost done! Check your email and click the link to confirm your account."); }
+      else showCheckEmail(email);
     } else if (authMode === "forgot") {
       await requestPasswordRecovery(email);
       closeModals();
@@ -177,12 +185,31 @@ $("#authForm").addEventListener("submit", async (e) => {
   }
 });
 
+// Sign-ups must confirm their email before they can log in, so keep that step on screen
+// and remember where they were heading for when they come back from the email link.
+function showCheckEmail(email) {
+  if (afterLogin) localStorage.setItem("afterConfirm", afterLogin);
+  $("#authForm").hidden = true;
+  $("#authTabs").hidden = true;
+  $("#authTitle").textContent = "Check your email";
+  $("#checkEmailAddr").textContent = email;
+  $("#authCheckEmail").hidden = false;
+}
+
+$("#checkEmailLogin").addEventListener("click", () => {
+  const email = $("#checkEmailAddr").textContent;
+  openAuth("login", afterLogin);
+  $("#authForm").elements.email.value = email;
+  $("#authForm").elements.password.focus();
+});
+
 async function loggedIn(message) {
   closeModals();
   await refreshMe();
   toast(message);
-  const next = afterLogin;
+  const next = afterLogin || localStorage.getItem("afterConfirm");
   afterLogin = null;
+  localStorage.removeItem("afterConfirm");
   if (next) go(next);
   else routeFromHash();
 }
@@ -648,7 +675,12 @@ async function start() {
       history.replaceState(null, "", location.pathname);
       await refreshMe();
       if (result.type === "recovery") { openAuth("reset"); }
-      else if (result.type === "confirmation") toast("Email confirmed. Welcome to Student Living Cyprus!");
+      else if (result.type === "confirmation") {
+        toast("Email confirmed. Welcome to Student Living Cyprus!");
+        const next = localStorage.getItem("afterConfirm");
+        localStorage.removeItem("afterConfirm");
+        if (next && state.user) { go(next); return; }
+      }
       else if (result.type === "invite") { inviteToken = result.token; openAuth("invite"); }
       else if (result.type === "email_change") toast("Your email address was updated.");
     } else {

@@ -64,7 +64,7 @@
 
 <div id="advertise" class="page"><section><div class="wrap">
   <div class="section-head"><div><div class="eyebrow">Landlords & agents</div><h2>Post a property</h2><p class="sub">Listings are reviewed by our team, usually within a day, before they appear in search.</p></div></div>
-  <div id="advertiseGate" class="empty" hidden>Log in or create a free account to post a listing. <button class="btn" style="margin-left:10px" data-login>Log in / Sign up</button></div>
+  <div id="advertiseGate" class="empty" hidden>You need a free account to post a listing. New here? Sign up, confirm your email, then come back to this page. <div style="margin-top:14px"><button class="btn" data-signup>Create free account</button> <button class="btn secondary" data-login>Log in</button></div></div>
   <form class="panel form-grid" id="listingForm" novalidate>
     <div class="field"><label>Property title *</label><input name="title" required maxlength="90" placeholder="e.g. Sunny 2-bedroom apartment"></div>
     <div class="field"><label>Property type *</label><select name="type" required><option>Apartment</option><option>Studio</option><option>Room</option></select></div>
@@ -179,6 +179,11 @@
     <button class="btn" id="authSubmit">Log in</button>
     <button type="button" class="link" id="forgotLink" data-for="login">Forgot your password?</button>
   </form>
+  <div id="authCheckEmail" class="stack" hidden>
+    <p>We sent a confirmation link to <strong id="checkEmailAddr"></strong>. Open it to activate your account. You'll come straight back here to post your listing.</p>
+    <p class="note">No email after a few minutes? Check your spam or promotions folder.</p>
+    <button type="button" class="btn" id="checkEmailLogin">I've confirmed, log me in</button>
+  </div>
 </div></div>
 
 <div id="toast" class="toast" role="status"></div>
